@@ -1,5 +1,6 @@
 package tacos.Model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,7 +18,9 @@ public class Ingredient {
     @Id // Primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // Auto-generates id
     private int id;
-    private String ingredientName;   // Name of the ingredient
+    @Column(nullable = false)
+    private String ingredientName; // Name of the ingredient
+    @Column(nullable = false)
     private String ingredientType;  // Type like wrap, protein, etc.
 
 }

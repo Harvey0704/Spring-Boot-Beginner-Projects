@@ -1,14 +1,13 @@
 package tacos.Controller;
 
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import tacos.Dto.IngredientDTO;
 import tacos.Mapper.IngredientMapper;
 import tacos.Model.Ingredient;
 import tacos.Service.IngredientService;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,65 +15,63 @@ import java.util.stream.Collectors;
 @RequestMapping("/ingredients")
 public class IngredientController {
 
-    @Autowired
-    private IngredientService ingredientService;
+    private final IngredientService ingredientService;
+    private final IngredientMapper mapper;
 
-    @Autowired
-    private IngredientMapper mapper;
+    public IngredientController(IngredientService ingredientService, IngredientMapper mapper) {
+        this.ingredientService = ingredientService;
+        this.mapper = mapper;
+    }
 
-//    create a new ingredient
+    // ------------------ CREATE ------------------
     @PostMapping
-    public ResponseEntity<?> createIngredient(@Valid @RequestBody IngredientDTO dto, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors().get(0).getDefaultMessage());
-        }
-
+    public ResponseEntity<IngredientDTO> createIngredient(@Valid @RequestBody IngredientDTO dto) {
         Ingredient saved = ingredientService.createIngredient(mapper.toEntity(dto));
         return ResponseEntity.ok(mapper.toDTO(saved));
     }
 
-//    get all ingredient
+    // ------------------ READ ------------------
+
+    // Get all ingredients or optionally filter by name/type
     @GetMapping
-    public ResponseEntity<?> getAllIngredients() {
-        List<IngredientDTO> dtos = ingredientService.getAllIngredients()
-                .stream().map(mapper::toDTO).collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
-    }
+    public ResponseEntity<List<IngredientDTO>> getAllIngredients(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String type) {
 
-//    get ingredient by id
-    @GetMapping("/id/{id}")
-    public ResponseEntity<?> getIngredientsById(@PathVariable int id) {
-        return ResponseEntity.ok(mapper.toDTO(ingredientService.getIngredientsById(id)));
-    }
+        List<Ingredient> ingredients;
 
-//  get ingredient by name
-    @GetMapping("/name/{name}")
-    public ResponseEntity<?> getIngredientsByName(@PathVariable String name) {
-        List<IngredientDTO> dtos = ingredientService.getIngredientsByName(name)
-                .stream().map(mapper::toDTO).collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
-    }
-
-//    get ingredient by type
-    @GetMapping("/type/{type}")
-    public ResponseEntity<?> getIngredientsByType(@PathVariable String type) {
-        List<IngredientDTO> dtos = ingredientService.getIngredientsByType(type)
-                .stream().map(mapper::toDTO).collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
-    }
-
-//    update ingredient by id
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateIngredient(@PathVariable int id, @Valid @RequestBody IngredientDTO dto, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors().get(0).getDefaultMessage());
+        if (name != null && !name.isBlank()) {
+            ingredients = ingredientService.getIngredientsByName(name);
+        } else if (type != null && !type.isBlank()) {
+            ingredients = ingredientService.getIngredientsByType(type);
+        } else {
+            ingredients = ingredientService.getAllIngredients();
         }
+
+        List<IngredientDTO> dtos = ingredients.stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
+    // Get ingredient by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<IngredientDTO> getIngredientById(@PathVariable int id) {
+        Ingredient ingredient = ingredientService.getIngredientsById(id);
+        return ResponseEntity.ok(mapper.toDTO(ingredient));
+    }
+
+    // ------------------ UPDATE ------------------
+    @PutMapping("/{id}")
+    public ResponseEntity<IngredientDTO> updateIngredient(
+            @PathVariable int id,
+            @Valid @RequestBody IngredientDTO dto) {
 
         Ingredient updated = ingredientService.updateIngredient(id, mapper.toEntity(dto));
         return ResponseEntity.ok(mapper.toDTO(updated));
     }
 
-//    delete ingredient by id
+    // ------------------ DELETE ------------------
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteIngredient(@PathVariable int id) {
         ingredientService.deleteIngredient(id);

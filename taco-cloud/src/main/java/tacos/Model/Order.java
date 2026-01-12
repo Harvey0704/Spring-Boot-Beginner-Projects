@@ -17,9 +17,13 @@ public class Order {
     @Id // Primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-generates id
     private int id;
+    @Column(nullable = false)
     private String username; // Name of the user who placed the order
+    
+    @Column(nullable = false)
     private String address; // Deliver address
     private Long total; // Total price of the order
+    @Column(nullable = false)
     private Long phone; // Phone number of the user
     @ManyToMany // Many-to-many relationship with tacos
     @JoinTable(
