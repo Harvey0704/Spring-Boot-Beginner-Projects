@@ -10,6 +10,7 @@ public class IngredientMapper {
     // converts ingredient entity to ingredientDTO
     public IngredientDTO toDTO(Ingredient ingredient){
         IngredientDTO dto = new IngredientDTO();
+        
         dto.setIngredientName(ingredient.getIngredientName());
         dto.setIngredientType(ingredient.getIngredientType());
         return dto;
