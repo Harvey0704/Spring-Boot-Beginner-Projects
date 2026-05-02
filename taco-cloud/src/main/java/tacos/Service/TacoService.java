@@ -50,7 +50,7 @@ public class TacoService {
 
 //    get latest tacos by number of count
     public List<Taco> getLatestTacos(int count){
-        return tacoRepository.findAll(PageRequest.of(0,count,Sort.by(Sort.Direction.DESC," id"))).getContent();
+        return tacoRepository.findAll(PageRequest.of(0,count,Sort.by(Sort.Direction.DESC,"id"))).getContent();
     }
 
 //   update taco by id
@@ -59,7 +59,9 @@ public class TacoService {
             throw new TacoNotFoundException("Taco not found to modify");
         }
         return tacoRepository.findById(id)
-                .map(existingTaco-> {existingTaco.setTacoName(updatedTaco.getTacoName());
+                .map(existingTaco-> {
+                    existingTaco.setTacoName(updatedTaco.getTacoName());
+                    existingTaco.setPrice(updatedTaco.getPrice());
                     existingTaco.setIngredients(updatedTaco.getIngredients());
                     return  tacoRepository.save(existingTaco);
                 })
