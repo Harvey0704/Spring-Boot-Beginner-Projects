@@ -29,6 +29,21 @@ public class IngredientController {
         Ingredient saved = ingredientService.createIngredient(mapper.toEntity(dto));
         return ResponseEntity.ok(mapper.toDTO(saved));
     }
+    // ------------------ BATCH CREATE ------------------//harvey
+    @PostMapping("/batch")
+    public ResponseEntity<List<IngredientDTO>> createIngredients(@RequestBody List<IngredientDTO> dtos) {
+        List<Ingredient> ingredients = dtos.stream()
+                .map(mapper::toEntity)
+                .collect(Collectors.toList());
+
+        List<IngredientDTO> saved = ingredientService.createIngredients(ingredients)
+                .stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(saved);
+    }
+
 
     // ------------------ READ ------------------
 

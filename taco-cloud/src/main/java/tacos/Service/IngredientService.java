@@ -61,5 +61,18 @@ public class IngredientService {
         }
         ingredientRepository.deleteById(id);
     }
+    // create multiple ingredients at once //harvey
+    public List<Ingredient> createIngredients(List<Ingredient> ingredients) throws IngredientException {
+        for (Ingredient ingredient : ingredients) {
+            if (ingredient.getIngredientName().isEmpty() ||
+                    ingredient.getIngredientType().isEmpty()) {
+                throw new IngredientException("Ingredient details cannot be empty.");
+            }
+        }
+        return ingredientRepository.saveAll(ingredients);
+    }
+
+
+
 
 }

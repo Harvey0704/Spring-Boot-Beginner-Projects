@@ -35,6 +35,21 @@ public class TacoController {
         return ResponseEntity.ok(mapper.toDTO(savedTaco));
     }
 
+//  create multiple tacos at once  //harvey
+    @PostMapping("/batch")
+    public ResponseEntity<?> createTacos(@RequestBody List<TacoDTO> dtos) {
+        List<Taco> tacos = dtos.stream()
+                .map(mapper::toEntity)
+                .collect(Collectors.toList());
+
+        List<TacoDTO> saved = tacoService.createTacos(tacos)
+                .stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(saved);
+    }
+
 //    get all tacos
     @GetMapping
     public ResponseEntity<?> getAllTacos() {

@@ -75,5 +75,14 @@ public class TacoService {
         }
         tacoRepository.deleteById(id);
     }
+//    create multiple tacos at once //harvey
+    public List<Taco> createTacos(List<Taco> tacos) throws TacoNotFoundException {
+        for (Taco taco : tacos) {
+            if (taco.getIngredients() == null || taco.getIngredients().isEmpty()) {
+                throw new TacoNotFoundException("Taco must have at least one Ingredient.");
+            }
+        }
+        return tacoRepository.saveAll(tacos);
+    }
 
 }
