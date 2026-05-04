@@ -24,7 +24,7 @@ public class Order {
     private String address; // Deliver address
     private Long total; // Total price of the order
     @Column(nullable = false)
-    private Long phone; // Phone number of the user
+    private String phone; // Phone number of the user
     @ManyToMany // Many-to-many relationship with tacos
     @JoinTable(
             name = "order_tacos",   // Join table name

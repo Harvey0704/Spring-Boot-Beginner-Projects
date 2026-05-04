@@ -19,8 +19,8 @@ public class OrderDTO {
     private String address;
 
     // Phone number of the customer (should not be blank)
-    @NotNull(message = "Customer phone number is required")
-    private Long phone;
+    @NotBlank(message = "Customer phone number is required")
+    private String  phone;
 
 //    Order quantity must be greater or equal to 1
     @NotNull(message = "Order must contain at least one taco")
